@@ -1,8 +1,15 @@
 #!/bin/bash
 
-# docker exec devkinsta_fpm bash -c 'bash /www/kinsta/private/setup-xdebug.sh'
+# Usage:
+# > docker exec devkinsta_fpm bash -c 'bash /www/kinsta/private/setup-xdebug.sh'
 
-echo "=== Updating apm ==="; apt-get update
+# -----
+title() {
+	echo; echo "=== $1 ==="
+}
+# -----
+
+title "Updating apm"; apt-get update
 
 # Get a list of all present PHP versions and setup Xdebug for them.
 update-alternatives --list php | while read bin ; do
@@ -12,11 +19,11 @@ update-alternatives --list php | while read bin ; do
 	service="/etc/init.d/php$version-fpm"
 	so_path=$(/usr/bin/php$version -r 'echo ini_get("extension_dir");')
 
-	echo; echo "=== Installing $package ==="; apt-get -y install $package
+	title "Installing $package"; apt-get -y install $package
 
-	echo "=== Xdebug extension for php$version ==="; ls "$so_path/xdebug.so"
+	title "Xdebug extension for php$version"; ls "$so_path/xdebug.so"
 	
-	echo "=== Prepare $ini_path ==="; cat > $ini_path <<-EOF
+	title "Prepare $ini_path"; cat > $ini_path <<-EOF
 	zend_extension=xdebug.so
 	xdebug.mode=develop,debug
 	xdebug.client_port=9003
@@ -24,7 +31,7 @@ update-alternatives --list php | while read bin ; do
 	xdebug.log=/www/kinsta/logs/xdebug.log
 EOF
 
-	echo "=== Restart $service ==="; $service restart
+	title "Restart $service"; $service restart
 done
 
 echo; echo "All done"

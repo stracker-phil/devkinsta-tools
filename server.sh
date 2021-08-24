@@ -22,13 +22,13 @@
 # files inside the DevKinsta/public folder!
 #
 
+source .lib.sh
+
 web_server=$1
 db_server=$2
 
-# -----
-root_dir=$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd))
 usage() {
-	echo; echo "Usage:"
+	title "Usage"
 	echo "> $0 [<webserver> [<dbserver>]]"
 	echo "  The default value for both servers is 'kinsta'"
 	echo; echo "Samples:"
@@ -36,18 +36,7 @@ usage() {
 	echo "> $0 kinsta mamp   # Nginx on Docker, MySQL on MAMP"; echo
 	exit 1
 }
-title() {
-	echo; echo "=== $1 ===";
-}
-log() {
-	echo " * $1"
-}
-error() {
-	local msg=$1
-	shift; echo; echo "ERROR: $msg";
-	if [ $1 ]; then echo $*; fi; echo
-	exit 1
-}
+
 # -----
 
 stop_kinsta() {
@@ -79,6 +68,8 @@ EOF
 	fi
 }
 
+# -----
+
 stop_mamp() {
 	log "Stopping MAMP web servers ..."
 	osascript -e 'quit app "MAMP PRO"'
@@ -87,6 +78,8 @@ start_mamp() {
 	log "Starting MAMP web servers ..."
 	open --hide /Applications/MAMP\ Pro.app
 }
+
+# -----
 
 set_host() {
 	local host=$1
@@ -98,6 +91,8 @@ set_host() {
 		sed -Ei '' "s/(define\([[:space:]]*'DB_HOST',[[:space:]]*')(.*)('[[:space:]]*\);).*$/\1$host\3 # Previous: \2/g" "$f"
 	done
 }
+
+# -----
 
 if [ ! -d /Applications/MAMP\ Pro.app ]; then
 	error "MAMP Pro not found"

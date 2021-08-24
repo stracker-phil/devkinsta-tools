@@ -1,11 +1,12 @@
 #!/bin/bash
 
+#
 # Installation:
 # > docker exec devkinsta_fpm bash -c 'bash /www/kinsta/private/setup-backups.sh'
-
+#
 # Run backups manually:
 # > docker exec devkinsta_fpm bash -c 'bash /www/kinsta/run-backups.sh'
-
+#
 # This script creates a DB dump of all databases in an 3-hour interval
 # DB backups are stored in the folder DevKinsta/private/backups
 #
@@ -13,29 +14,18 @@
 # that database are deleted. You will only have the most current 
 # backup of each database. Make sure to include the backups folder in
 # Timemachine and Backblaze backups!
+#
 
-# -----
-root_dir=$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd))
-title() {
-	echo; echo "=== $1 ==="
-}
-log() {
-	echo " * $1"
-}
-error() {
-	local msg=$1
-	shift; echo; echo "ERROR: $msg";
-	if [ $1 ]; then echo $*; fi; echo
-	exit 1
-}
-# -----
+source "$(dirname $0)/.lib.sh"
+
+# Propagate the command to docker, if called on the host.
+run_in_docker $0 $*
 
 if ! command -v cron &> /dev/null; then
 	title "Installing cron"
 	apt-get update; apt-get install cron
 	log "OK"
 fi
-
 
 title "Add cron to autostart"
 init_file=/etc/supervisor/conf.d/supervisord.conf

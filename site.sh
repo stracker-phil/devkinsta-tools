@@ -13,26 +13,7 @@
 # Todo: Update Tower sqlite DB and update repos inside the moved foled
 #
 
-# -----
-root_dir=$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd))
-usage() {
-	echo; echo "Usage:"; echo
-	echo "$0 enable|disable <website-dir>"; echo
-	exit 1
-}
-title() {
-	echo; echo "=== $1 ===";
-}
-log() {
-	echo " * $1"
-}
-error() {
-	local msg=$1
-	shift; echo; echo "ERROR: $msg";
-	if [ $1 ]; then echo $*; fi; echo
-	exit 1
-}
-# -----
+source "$(dirname $0)/.lib.sh"
 
 state=$1
 site=$2
@@ -40,26 +21,26 @@ pub_dir=$root_dir/public/$site
 arch_dir=$root_dir/archive/$site
 #db_done=$(docker exec devkinsta_fpm bash -c '[ ! -f /www/kinsta/mysql.conf ] || echo 1')
 
-
-#if [ -z "$db_done" ]; then
-#	error "Please first run the setup-backup.sh script"
-#fi
-if [ -z "$state" ] || [ -z "$site" ]; then
-	usage
-fi
-if [ "enable" != $state ] && [ "disable" != $state ]; then
-	usage
-fi
-
-if [ ! -d $pub_dir ]; then
-	error "Could not find the website inside the 'public' folder:" "$pub_dir"
+usage() {
+	title "Usage"
+	cmd "$0" "enable|disable <website-dir>"
 	exit 1
-fi
+}
 
-#
-# Disable site.
-#
-if [ "disable" = $state ]; then
+# -----
+
+site_enable() {
+	title "Restore $site"
+	if [ ! -d $arch_dir ]; then
+		error "Could not find an archived version of the website:" "$arch_dir"
+	fi
+
+	rm -rf $pub_dir
+	mv $arch_dir $pub_dir
+	log "Done! Restored '$site' from the archive folder"
+}
+
+site_disable() {
 	title "Archive $site"
 	rm -rf $arch_dir
 	mv $pub_dir $arch_dir
@@ -77,18 +58,28 @@ if [ "disable" = $state ]; then
 	</html>
 EOF
 	log "Done! Moved '$site' to the archive folder"
+}
+
+# -----
+
+#if [ -z "$db_done" ]; then
+#	error "Please first run the setup-backup.sh script"
+#fi
+if [ -z "$state" ] || [ -z "$site" ]; then
+	usage
+fi
+if [ "enable" != $state ] && [ "disable" != $state ]; then
+	usage
 fi
 
-#
-# Enable site.
-#
-if [ "enable" = $state ]; then
-	title "Restore $site"
-	if [ ! -d $arch_dir ]; then
-		error "Could not find an archived version of the website:" "$arch_dir"
-	fi
+if [ ! -d $pub_dir ]; then
+	error "Could not find the website inside the 'public' folder:" "$pub_dir"
+	exit 1
+fi
 
-	rm -rf $pub_dir
-	mv $arch_dir $pub_dir
-	log "Done! Restored '$site' from the archive folder"
+if [ "disable" = $state ]; then
+	site_disable
+fi
+if [ "enable" = $state ]; then
+	site_enable
 fi

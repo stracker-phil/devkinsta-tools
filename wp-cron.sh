@@ -79,14 +79,14 @@ adddate() {
 }
 
 cd $pub_dir
-wp cron event run --due-now --allow-root | adddate >> $log_file 2>&1
+/usr/local/bin/wp cron event run --due-now --allow-root | adddate >> $log_file 2>&1
 EOF
 
 crontab -l > new_cron
 sed -i "\=$site_script=d" new_cron
 
 if [ "0" != $interval ]; then
-	echo "*/$interval * * * * bash $site_script" >> new_cron
+	echo "*/$interval * * * * bash $site_script >> $log_file 2>&1" >> new_cron
 	log "Interval: $interval"
 else
 	log "Disabled wp-cron"

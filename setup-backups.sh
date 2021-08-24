@@ -113,7 +113,7 @@ log "OK"
 title "Setup cron-job"
 crontab -l > new_cron
 sed -i "\=$command=d" new_cron
-echo "0 1,4,7,10,13,16,19,22 * * * bash $command" >> new_cron
+echo "0 1,4,7,10,13,16,19,22 * * * bash $command >> $log_file 2>&1" >> new_cron
 crontab new_cron
 rm new_cron
 service cron start &>/dev/null

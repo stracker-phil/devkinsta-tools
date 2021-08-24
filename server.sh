@@ -10,10 +10,13 @@
 # In MAMP Pro Settings, activate the following two options:
 #    - Launch Group Start Servers: When starting MAMP PRO
 #    - Stop Servers: when quitting MAMP PRO
+# MAMP Pro Ports:
+#    - Apache: 80 / 443
+#    - MySQL:  8889
 #
 # 1. Create the website in DevKinsta
 # 2. Start MAMP Pro and create a new (empty) host that points to the
-#    DevKinsta/public/website folder. 
+#    DevKinsta/public/website folder.
 #
 # Attention: This script updates the DB_HOST of all wp-config.php 
 # files inside the DevKinsta/public folder!
@@ -53,7 +56,9 @@ stop_kinsta() {
 }
 start_kinsta() {
 	log "Starting DevKinsta web servers ..."
-	docker start devkinsta_fpm devkinsta_nginx
+	res=$(docker start devkinsta_fpm devkinsta_nginx)
+
+	echo "$res"; echo
 
 	cat <<EOF | docker exec --interactive devkinsta_fpm bash 
 	update-alternatives --list php | while read bin ; do
@@ -62,6 +67,16 @@ start_kinsta() {
 		\$service restart
 	done
 EOF
+	
+	if ! grep -q devkinsta_nginx <<<"$res"; then
+		title "Could not start nginx!"
+		echo "  Usually, this happens because Apache is still running."
+		echo "  Very likely, Apache is currently shutting down, so you can"
+		echo "  wait a minute and try again."
+		echo; echo "  If this does not help, try the following command:"
+		echo "  > lsof -i -P | grep -E ':(80|443).*LISTEN' # show running servers"
+		echo "  > sudo killall httpd                       # kill the httpd server"
+	fi
 }
 
 stop_mamp() {

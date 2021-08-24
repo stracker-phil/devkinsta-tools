@@ -79,7 +79,15 @@ log "OK"
 
 title "Create backup script"
 cat > $command <<-EOF
-echo "Starting automated DB backups"
+#!/bin/bash
+
+adddate() {
+	while IFS= read -r line; do
+		printf '%s | %s\n' "\$(date "+%Y-%m-%d %H:%M:%S")" "\$line";
+	done
+}
+
+echo "Starting automated DB backups" | adddate >> $log_file 2>&1
 list=\$(mysql --defaults-extra-file=$conf_file -Bse "SHOW DATABASES;")
 
 for db in \${list[@]}; do
@@ -94,18 +102,18 @@ for db in \${list[@]}; do
 
 	tstamp=\$(date "+%Y%m%d.%H%M")
 
-	echo "Backup of \$db @ \$tstamp ..."
+	echo "Backup of \$db @ \$tstamp ..." | adddate >> $log_file 2>&1
 	rm -f "$target"\$db.*sql
-	mysqldump --defaults-extra-file=$conf_file --column-statistics=0 \$db > "$target"\$db.\$tstamp.sql
+	mysqldump --defaults-extra-file=$conf_file --column-statistics=0 \$db > "$target"\$db.\$tstamp.sql | adddate >> $log_file 2>&1
 done
-echo "Backup complete!"; echo ""
+echo "Backup complete!" | adddate >> $log_file 2>&1
 EOF
 log "OK"
 
 title "Setup cron-job"
 crontab -l > new_cron
 sed -i "\=$command=d" new_cron
-echo "0 1,4,7,10,13,16,19,22 * * * bash $command >> $log_file 2>&1" >> new_cron
+echo "0 1,4,7,10,13,16,19,22 * * * bash $command" >> new_cron
 crontab new_cron
 rm new_cron
 service cron start &>/dev/null

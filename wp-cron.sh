@@ -13,6 +13,7 @@ source "$(dirname $0)/.lib.sh"
 site_dir=$1
 interval=$2
 pub_dir=$root_dir/public/$site_dir/
+site_script=/www/kinsta/wp-cron-$site_dir.sh
 
 usage() {
 	title "Usage"
@@ -63,15 +64,29 @@ fi
 update-rc.d cron defaults
 log "OK"
 
+log_file=/www/kinsta/logs/cron.log
 title "Setup cron-job"
 log "Website: $site_dir"
 log "Path: $pub_dir"
 
+cat >$site_script<<-EOF
+#!/bin/bash
+
+adddate() {
+	while IFS= read -r line; do
+		printf '%s | %s\n' "\$(date "+%Y-%m-%d %H:%M:%S")" "\$line";
+	done
+}
+
+cd $pub_dir
+wp cron event run --due-now --allow-root | adddate >> $log_file 2>&1
+EOF
+
 crontab -l > new_cron
-sed -i "\=cd $pub_dir=d" new_cron
+sed -i "\=$site_script=d" new_cron
 
 if [ "0" != $interval ]; then
-	echo "*/$interval * * * * cd $pub_dir && wp cron event run --due-now --allow-root > /dev/null 2>&1" >> new_cron
+	echo "*/$interval * * * * bash $site_script" >> new_cron
 	log "Interval: $interval"
 else
 	log "Disabled wp-cron"

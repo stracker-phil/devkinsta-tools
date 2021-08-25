@@ -17,13 +17,15 @@ site_script=/www/kinsta/wp-cron-$site_dir.sh
 
 usage() {
 	title "Usage"
-	cmd "$0" "<website-dir> <interval>'"
+	cmd "$0" "<website-dir> <interval>|now"
 	echo "- website-dir ... The root dir of the site, inside the public folder"
 	echo "- interval ... Cron interval (in minutes). Set to 0 to disable wp-cron"
 	echo; echo "Call wp-cron in 5-minute intervals:"
 	cmd "$0" "my_site 5'"
 	echo "Disable wp-cron for website.local:"
 	cmd "$0" "my_site 0'"
+	echo "Run wp-cron now without changing the interval:"
+	cmd "$0" "my_site now'"
 	exit 1
 }
 
@@ -82,17 +84,24 @@ cd $pub_dir
 /usr/local/bin/wp cron event run --due-now --allow-root | stamp >> $log_file 2>&1
 EOF
 
-crontab -l > new_cron
-sed -i "\=$site_script=d" new_cron
-
-if [ "0" != $interval ]; then
-	echo "*/$interval * * * * bash $site_script >> $log_file 2>&1" >> new_cron
-	log "Interval: $interval"
+if [ "now" = $interval ]; then
+	log "Running due wp-cron tasks for $site_dir..."
+	# Run the cron script without modifying the crontab.
+	bash $site_script >> $log_file 2>&1
 else
-	log "Disabled wp-cron"
+	crontab -l > new_cron
+	sed -i "\=$site_script=d" new_cron
+
+	if [ "0" != $interval ]; then
+		echo "*/$interval * * * * bash $site_script >> $log_file 2>&1" >> new_cron
+		log "Interval: $interval"
+	else
+		log "Disabled wp-cron"
+	fi
+
+	crontab new_cron
+	rm new_cron
 fi
 
-crontab new_cron
-rm new_cron
 service cron start &>/dev/null
 log "OK"

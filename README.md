@@ -2,6 +2,8 @@
 
 Collection of small tools that provide additional features when developing websites using [DevKinsta](https://kinsta.com/de/devkinsta/).
 
+----
+
 ## Installation
 
 ```shell
@@ -9,11 +11,13 @@ cd ~/DevKinsta/private
 git clone https://github.com/stracker-phil/devkinsta-tools.git .
 ```
 
+----
+
 ## Scripts
 
 Here is a short overview of the scripts and what they can do for you:
 
-#### `setup-backups.sh`
+### Script: `setup-backups.sh`
 
 ```shell
 setup-backups.sh
@@ -29,7 +33,7 @@ Setup script to start automatic DB backups. You only need to run this script onc
 1. Create a backup script that uses `mysqldump` to export each database to your `private/backups` folder
 1. Register a cron task that calls the backup script every 3 hours.
 
-#### `setup-xdebug.sh`
+### Script: `setup-xdebug.sh`
 
 ```shell
 setup-xdebug.sh
@@ -42,7 +46,7 @@ Setup script to install and configure Xdebug for all available PHP modules. You 
 1. Enables Xdebug
 1. Restarts all php services
 
-#### `wp-cron.sh`
+### Script: `wp-cron.sh`
 
 ```shell
 wp-cron.sh <website-dir> <interval>
@@ -63,7 +67,7 @@ Configures a cron service that calls wp-cron for the specified website in a cust
 
 Notes: The wp-cron event is triggerd via WP CLI. If this script is called before `setup-backups.sh` it will first install and configure the `cron` daemon for you.
 
-#### `xdebug.sh`
+### Script: `xdebug.sh`
 
 ```shell
 xdebug.sh <state>
@@ -79,7 +83,7 @@ Enables or disables the xdebug php module. This script can only be used after ca
 
 Tip: Only enable Xdebug when you actually need it. While the module is active, your local website-performance decreases considerably!
 
-#### `site.sh`
+### Script: `site.sh`
 
 ```shell
 site.sh <action> <website-dir>
@@ -93,7 +97,7 @@ I noticed that DevKinsta gets slightly slower the more files are present inside 
 
 You can restore an archived website by calling the script with the action "enable" to undo that change.
 
-#### `server.sh`
+### Script: `server.sh`
 
 ```shell
 server.sh <web-server> <db-server>
@@ -135,6 +139,8 @@ What it does:
     * `localhost:8889` (when webserver is also `mamp`)
     * `host.docker.internal:8889` (when webserver is `kinsta`)
 
+----
+
 ## PhpStorm
 
 Some tips and notes on integrating those scripts with PhpStorm
@@ -158,7 +164,7 @@ In PhpStorm you can add the shell scripts above to your toolbar to quickly run c
     * Here you can assign a custom icon to the tools; I've included some icons in the `private/asset` folder
 
 **Step 1:** Add a new external script
-<img src="/blob/main/asset/guide/phpstorm-tools-1.png?raw=true" />
+<img src="/asset/guide/phpstorm-tools-1.png?raw=true" />
 
 **Step 2:** Add the tool to a toolbar/menu
-<img src="/blob/main/asset/guide/phpstorm-tools-2.png?raw=true" />
+<img src="/asset/guide/phpstorm-tools-2.png?raw=true" />

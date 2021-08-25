@@ -27,6 +27,8 @@ setup-backups.sh
 
 Setup script to start automatic DB backups. You only need to run this script once (or after updating DevKinsta).
 
+The setup routine handles the following tasks:
+
 1. Install the `cron` daemon in devkinsta_fpm container
 1. Register the `cron` service to the containers autostart scripts
 1. Extract the MySQL credentials from the an existing DevKinsta website
@@ -40,6 +42,8 @@ setup-xdebug.sh
 ```
 
 Setup script to install and configure Xdebug for all available PHP modules. You only need to run this script once (or after updating DevKinsta).
+
+The setup routine handles the following tasks:
 
 1. Installs the xdebug module for all available php services
 1. Creates xdebug.ini configuration
@@ -59,8 +63,8 @@ wp-cron.sh example-site now # Run wp-cron once without chaning the interval
 
 Configures a cron service that calls wp-cron for the specified website in a custom interval.
 
-* `website-dir` .. the folder name of the website inside the `~/DevKinsta/public` folder.
-* `interval` .. accepts the following values:
+* `<website-dir>` .. the folder name of the website inside the `~/DevKinsta/public` folder.
+* `<interval>` .. accepts the following values:
     * `0` .. disable wp-cron
     * An integer value .. interval in minutes (e.g. `5`)
     * `now` .. run wp-cron once without modifying an existing cron interval
@@ -79,7 +83,7 @@ xdebug.sh off # Completely disables Xdebug again
 
 Enables or disables the xdebug php module. This script can only be used after calling `setup-xdebug.sh`!
 
-* `state` .. Either `on` or `off`
+* `<state>` .. Either "on" or "off"
 
 Tip: Only enable Xdebug when you actually need it. While the module is active, your local website-performance decreases considerably!
 
@@ -97,6 +101,9 @@ I noticed that DevKinsta gets slightly slower the more files are present inside 
 
 You can restore an archived website by calling the script with the action "enable" to undo that change.
 
+* `<state>` .. Either "enable" or "disable"
+* `<website-dir>` .. the folder name of the website inside the `~/DevKinsta/public` folder.
+
 ### Script: `server.sh`
 
 ```shell
@@ -109,6 +116,9 @@ server.sh             # Use DevKinsta for web server and MySQL
 ```
 
 This is a very specific script and will only work on a **macOS** machine that has **[MAMP Pro v6](https://www.mamp.info/de/downloads/)** installed. It also requires a certain MAMP Pro configuration, which is documented inside the shell script.
+
+* `<web-server>` .. Either "kinsta" or "mamp". Default is "kinsta".
+* `<db-server>` .. Either "kinsta" or "mamp". Default is "kinsta".
 
 What it does: When you set up MAMP accoringly, this script can be used to quickly switch between webservers and DB servers. If set up correctly, both MAMP and DevKinsta use the same codebase (i.e. the `DevKinsta/public/my-website` folder) but process that website in a differnt server.
 

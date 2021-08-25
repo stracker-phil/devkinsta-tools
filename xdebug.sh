@@ -35,5 +35,13 @@ else
 	title "Disable Xdebug"
 	phpdismod xdebug
 fi
+log "OK"
+
+# Restart all php instances.
+update-alternatives --list php | while read bin ; do
+	version=${bin#"/usr/bin/php"}
+	service="/etc/init.d/php$version-fpm"
+	title "Restart $service"; $service restart
+done
 
 log "All done"

@@ -15,20 +15,18 @@ usage() {
 	
 	title "Samples"
 	echo "Call wp-cron in 5-minute intervals:"
-	cmd "$0" "my_site 5'"
+	cmd "$0" "my_site 5"
 	echo "Disable wp-cron for website.local:"
-	cmd "$0" "my_site 0'"
-	echo "Run wp-cron now without changing the interval:"
-	cmd "$0" "my_site now'"
+	cmd "$0" "my_site 0"
+	echo "Run wp-cron without changing the interval:"
+	cmd "$0" "my_site now"
 
 	title "Description"
 	echo "Activates or deactivates the cron daemon and schedules a custom"
 	echo "wp-cron.php interval."
 	exit 1
 }
-if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
-	usage 
-fi
+show_help $1
 
 if [ -z "$site_dir" ] || [ -z "$interval" ]; then
 	usage

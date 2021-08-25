@@ -23,6 +23,12 @@ run_in_docker() {
 	fi
 }
 
+show_help() {
+	if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
+		usage
+	fi
+}
+
 title() {
 	echo
 	if [ 0 = $color ]; then

@@ -37,9 +37,7 @@ usage() {
 	echo "inside the DevKinsta/public folder!"
 	exit 1
 }
-if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
-	usage 
-fi
+show_help $1
 
 # -----
 

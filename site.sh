@@ -27,9 +27,7 @@ usage() {
 	echo "When enabling a website again, that process is reversed."
 	exit 1
 }
-if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
-	usage 
-fi
+show_help $1
 
 # -----
 

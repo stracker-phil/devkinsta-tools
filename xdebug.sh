@@ -14,9 +14,7 @@ usage() {
 	echo; echo "You need to call 'setup-xdebug.sh' once before using this script."
 	exit 1
 }
-if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
-	usage 
-fi
+show_help $1
 
 if [ -z "$1" ]; then
 	usage

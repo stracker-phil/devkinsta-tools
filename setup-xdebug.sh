@@ -9,9 +9,7 @@ usage() {
 	echo; echo "Installs and configures the PHP Xdebug module."
 	exit 1
 }
-if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
-	usage 
-fi
+show_help $1
 
 # Propagate the command to docker, if called on the host.
 run_in_docker $0 $*

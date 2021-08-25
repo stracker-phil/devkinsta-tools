@@ -17,10 +17,10 @@ git clone https://github.com/stracker-phil/devkinsta-tools.git .
 
 Here is a short overview of the scripts and what they can do for you:
 
-> **Need `--help`?**
->
-> Use the param `-h` or `--help` on any script to display usage details and notes.  
-> For example `wp-cron.sh --help`
+### Need `--help`?
+
+Use the param `-h` or `--help` on any script to display usage details and notes.  
+For example `wp-cron.sh --help` or `site.sh -h`
 
 ### Script: `setup-backups.sh`
 
@@ -28,6 +28,7 @@ Here is a short overview of the scripts and what they can do for you:
 
 ```shell
 setup-backups.sh
+setup-backups.sh --help
 ```
 
 #### Description
@@ -50,6 +51,7 @@ Setup script to start automatic DB backups. You only need to run this script onc
 
 ```shell
 setup-xdebug.sh
+setup-xdebug.sh --help
 ```
 
 #### Description
@@ -69,6 +71,7 @@ Setup script to install and configure Xdebug for all available PHP modules. You 
 
 ```shell
 wp-cron.sh <website-dir> <interval>
+wp-cron.sh --help
 
 # Examples:
 wp-cron.sh example-site 10  # Configure wp-cron with a 10 minute interval
@@ -96,6 +99,7 @@ Notes: The wp-cron event is triggerd via WP CLI. If this script is called before
 
 ```shell
 xdebug.sh <state>
+xdebug.sh --help
 
 # Examples:
 xdebug.sh on  # Enables Xdebug in all php services
@@ -118,6 +122,7 @@ Tip: Only enable Xdebug when you actually need it. While the module is active, y
 
 ```shell
 site.sh <action> <website-dir>
+site.sh --help
 
 # Examples:
 site.sh disable example-site
@@ -141,6 +146,7 @@ You can restore an archived website by calling the script with the action "enabl
 
 ```shell
 server.sh <web-server> <db-server>
+server.sh --help
 
 # Examples:
 server.sh kinsta mamp # Use Nginx of DevKinsta but link it to the MAMP Pro MySQL server

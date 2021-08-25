@@ -72,14 +72,14 @@ log "Path: $pub_dir"
 cat >$site_script<<-EOF
 #!/bin/bash
 
-adddate() {
+stamp() {
 	while IFS= read -r line; do
-		printf '%s | %s\n' "\$(date "+%Y-%m-%d %H:%M:%S")" "\$line";
+		printf '%s [%s] %s\n' "\$(date "+%Y-%m-%d %H:%M:%S")" "$site_dir" "\$line";
 	done
 }
 
 cd $pub_dir
-/usr/local/bin/wp cron event run --due-now --allow-root | adddate >> $log_file 2>&1
+/usr/local/bin/wp cron event run --due-now --allow-root | stamp >> $log_file 2>&1
 EOF
 
 crontab -l > new_cron

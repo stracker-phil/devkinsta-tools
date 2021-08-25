@@ -1,22 +1,26 @@
 #!/bin/bash
 
-#
-# Installation:
-# > docker exec devkinsta_fpm bash -c 'bash /www/kinsta/private/setup-backups.sh'
-#
-# Run backups manually:
-# > docker exec devkinsta_fpm bash -c 'bash /www/kinsta/run-backups.sh'
-#
-# This script creates a DB dump of all databases in an 3-hour interval
-# DB backups are stored in the folder DevKinsta/private/backups
-#
-# Note: Before taking a new backup of a DB, the previous backups of 
-# that database are deleted. You will only have the most current 
-# backup of each database. Make sure to include the backups folder in
-# Timemachine and Backblaze backups!
-#
-
 source "$(dirname $0)/.lib.sh"
+
+usage() {
+	title "Installation"
+	cmd "setup-backups.sh"
+	title "Run backups manually"
+	cmd "docker exec devkinsta_fpm bash -c" "'bash /www/kinsta/run-backups.sh'"
+
+	title "Description"
+	echo "This script creates a DB dump of all databases in an 3-hour interval"
+	echo "DB backups are stored in the folder DevKinsta/private/backups"
+	echo ""
+	echo "Note: Before taking a new backup of a DB, the previous backups of "
+	echo "that database are deleted. You will only have the most current "
+	echo "backup of each database. Make sure to include the backups folder in"
+	echo "Timemachine and Backblaze backups!"
+	exit 1
+}
+if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
+	usage 
+fi
 
 # Propagate the command to docker, if called on the host.
 run_in_docker $0 $*

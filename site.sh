@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# 
-# Script to disable or enable a DevKinsta website
-#
-# When disabling a website, its docoot folder is moved to the /archive
-# directory (outside the servers webroot folder) and a placeholder file
-# is left in its place to keep the website settings in DevKinsta.
-#
-# When enabling a website again, that process is reversed.
 #
 # Todo: Take a DB snapshot while disabling the website and restore it again
 # Todo: Update Tower sqlite DB and update repos inside the moved foled
@@ -24,8 +16,20 @@ arch_dir=$root_dir/archive/$site
 usage() {
 	title "Usage"
 	cmd "$0" "enable|disable <website-dir>"
+
+	title "Description"
+	echo "Script to disable or enable a DevKinsta website"
+	echo ""
+	echo "When disabling a website, its docoot folder is moved to the /archive"
+	echo "directory (outside the servers webroot folder) and a placeholder file"
+	echo "is left in its place to keep the website settings in DevKinsta."
+	echo ""
+	echo "When enabling a website again, that process is reversed."
 	exit 1
 }
+if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
+	usage 
+fi
 
 # -----
 

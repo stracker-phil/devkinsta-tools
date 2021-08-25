@@ -1,13 +1,5 @@
 #!/bin/bash
 
-#
-# Installation:
-# > wp-cron.sh <site> <state>
-#
-# Activates or deactivates the cron daemon and schedules a czustom
-# wp-cron.php interval.
-#
-
 source "$(dirname $0)/.lib.sh"
 
 site_dir=$1
@@ -18,16 +10,25 @@ site_script=/www/kinsta/wp-cron-$site_dir.sh
 usage() {
 	title "Usage"
 	cmd "$0" "<website-dir> <interval>|now"
-	echo "- website-dir ... The root dir of the site, inside the public folder"
-	echo "- interval ... Cron interval (in minutes). Set to 0 to disable wp-cron"
-	echo; echo "Call wp-cron in 5-minute intervals:"
+	log "website-dir ... The root dir of the site, inside the public folder"
+	log "interval ... Cron interval (in minutes). Set to 0 to disable wp-cron"
+	
+	title "Samples"
+	echo "Call wp-cron in 5-minute intervals:"
 	cmd "$0" "my_site 5'"
 	echo "Disable wp-cron for website.local:"
 	cmd "$0" "my_site 0'"
 	echo "Run wp-cron now without changing the interval:"
 	cmd "$0" "my_site now'"
+
+	title "Description"
+	echo "Activates or deactivates the cron daemon and schedules a custom"
+	echo "wp-cron.php interval."
 	exit 1
 }
+if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
+	usage 
+fi
 
 if [ -z "$site_dir" ] || [ -z "$interval" ]; then
 	usage

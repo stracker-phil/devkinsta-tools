@@ -17,6 +17,8 @@ git clone https://github.com/stracker-phil/devkinsta-tools.git .
 
 Here is a short overview of the scripts and what they can do for you:
 
+> Use the param `-h` or `--help` on any script to display usage details and notes. For example `wp-cron.sh --help`
+
 ### Script: `setup-backups.sh`
 
 #### Usage
@@ -130,7 +132,6 @@ I noticed that DevKinsta gets slightly slower the more files are present inside 
 
 You can restore an archived website by calling the script with the action "enable" to undo that change.
 
-
 ### Script: `server.sh`
 
 #### Usage
@@ -151,24 +152,25 @@ server.sh             # Use DevKinsta for web server and MySQL
 
 #### Description
 
-This is a very specific script and will only work on a **macOS** machine that has **[MAMP Pro v6](https://www.mamp.info/de/downloads/)** installed. It also requires a certain MAMP Pro configuration, which is documented inside the shell script.
+> This is a very specific script and will only work on a **macOS** machine that has **[MAMP Pro v6](https://www.mamp.info/de/downloads/)** installed. It also requires a certain MAMP Pro configuration, which is documented inside the shell script.
 
-What it does: When you set up MAMP accoringly, this script can be used to quickly switch between webservers and DB servers. If set up correctly, both MAMP and DevKinsta use the same codebase (i.e. the `DevKinsta/public/my-website` folder) but process that website in a differnt server.
+When you set up MAMP Pro correctly, this script can be used to quickly switch between webservers and DB servers. Both, MAMP and DevKinsta, use the same codebase (i.e. the `DevKinsta/public/my-website` folder) but process that codebase using a differnt server.
 
-Some use cases:
+**Some use cases:**
+
 * For performance comparison of DevKinsta vs MAMP and to confirm migration of websites.
 * MAMP uses Apache and DevKinsta nginx, this way you can have both
 * Toggle between two DB states
 * Quickly test a website on a mobile device using MAMP Viewer
 
-What it does:
+**What it does:**
 
-**Webserver: `kinsta`**
+**Web server: `kinsta`**
 1. Quit the MAMP Pro app (which stops all MAMP servers)
 1. Restarts the two docker containers `devkista_fpm` and `devkinsta_nginx`
 1. Restarts all php services in the `devkinsta_fpm` container
 
-**Webserver: `mamp`**
+**Web server: `mamp`**
 1. Stops the two docker containers `devkista_fpm` and `devkinsta_nginx`
 1. Starts the MAMP Pro app (which starts relevant MAMP servers)
 
@@ -178,6 +180,7 @@ What it does:
     * `127.0.0.1:15100` (when webserver is `mamp`)
 
 **DB Server: `mamp`**
+1. Starts the MAMP Pro app (which starts relevant MAMP servers)
 1. Updates all `wp-config.php` files and sets `DB_HOST` to either
     * `localhost:8889` (when webserver is also `mamp`)
     * `host.docker.internal:8889` (when webserver is `kinsta`)

@@ -1,27 +1,5 @@
 #!/bin/bash
 
-#
-# Switch the webserver between DevKinsta (nginx) and MAMP Pro (Apache)
-#
-# Usage: server.sh kinsta|mamp
-#
-# Preparation:
-#
-# In MAMP Pro Settings, activate the following two options:
-#    - Launch Group Start Servers: When starting MAMP PRO
-#    - Stop Servers: when quitting MAMP PRO
-# MAMP Pro Ports:
-#    - Apache: 80 / 443
-#    - MySQL:  8889
-#
-# 1. Create the website in DevKinsta
-# 2. Start MAMP Pro and create a new (empty) host that points to the
-#    DevKinsta/public/website folder.
-#
-# Attention: This script updates the DB_HOST of all wp-config.php 
-# files inside the DevKinsta/public folder!
-#
-
 source .lib.sh
 
 web_server=$1
@@ -29,13 +7,39 @@ db_server=$2
 
 usage() {
 	title "Usage"
-	echo "> $0 [<webserver> [<dbserver>]]"
-	echo "  The default value for both servers is 'kinsta'"
-	echo; echo "Samples:"
-	echo "> $0 kinsta        # Nginx and MySQL on Docker"
-	echo "> $0 kinsta mamp   # Nginx on Docker, MySQL on MAMP"; echo
+	cmd "$0" "<web-server> <db-server>"
+	log "<web-server> .. 'kinsta' or 'mamp'. Default is 'kinsta'"
+	log "<db-server> .. 'kinsta' or 'mamp'. Default is 'kinsta'"
+	
+	title "Samples"
+	echo "Use Nginx and MySQL on Docker:"
+	cmd "$0" "kinsta"
+	echo "Use Nginx on Docker, MySQL on MAMP:"
+	cmd "$0" "kinsta mamp"
+
+	title "Description"
+	echo " Switch the webserver between DevKinsta (nginx) and MAMP Pro (Apache)"
+
+	title "Preparation:"
+	echo "In MAMP Pro Settings, activate the following two options:"
+	echo "   - Launch Group Start Servers: When starting MAMP PRO"
+	echo "   - Stop Servers: when quitting MAMP PRO"
+	echo "MAMP Pro Ports:"
+	echo "   - Apache: 80 / 443"
+	echo "   - MySQL: 8889"
+	echo ""
+	echo "1. Create the website in DevKinsta"
+	echo "2. Start MAMP Pro and create a new (empty) host that points to the"
+	echo "   DevKinsta/public/website folder."
+	
+	title "Attention"
+	echo "This script updates the DB_HOST of all wp-config.php files"
+	echo "inside the DevKinsta/public folder!"
 	exit 1
 }
+if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
+	usage 
+fi
 
 # -----
 
@@ -127,24 +131,26 @@ title "Stopping servers"
 stop_mamp
 stop_kinsta
 
-sleep 1
+# Briefly wait for servers to shutdown.
+sleep 3
 
 if [ "kinsta" = $web_server ]; then
+	start_kinsta
+
 	if [ "kinsta" = $db_server ]; then
 		set_host "devkinsta_db"
 	else 
 		set_host "host.docker.internal:8889"
+		start_mamp
 	fi
-	title "Start DevKinsta Server"
-	start_kinsta
 fi
 
 if [ "mamp" = $web_server ]; then
+	start_mamp
+
 	if [ "kinsta" = $db_server ]; then
 		set_host "127.0.0.1:15100"
 	else 
 		set_host "localhost:8889"
 	fi
-	title "Start MAMP Pro Server"
-	start_mamp
 fi

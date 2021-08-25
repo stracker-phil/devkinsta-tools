@@ -1,13 +1,17 @@
 #!/bin/bash
 
-#
-# Usage:
-# > setup-xdebug.sh
-#
-# Installs and configures the PHP Xdebug module.
-#
-
 source "$(dirname $0)/.lib.sh"
+
+
+usage() {
+	title "Usage"
+	cmd "setup-xdebug.sh"
+	echo; echo "Installs and configures the PHP Xdebug module."
+	exit 1
+}
+if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
+	usage 
+fi
 
 # Propagate the command to docker, if called on the host.
 run_in_docker $0 $*

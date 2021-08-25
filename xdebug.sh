@@ -1,19 +1,22 @@
 #!/bin/bash
 
-#
-# Disables or enabled the Xdebug module for PHP.
-# Xdebug often decreases performance considerably. That's why it's best 
-# to disable it when it's not needed
-#
-
 source "$(dirname $0)/.lib.sh"
 
 usage() {
 	title "Usage"
 	cmd "$0" "on"
 	cmd "$0" "off"
+
+	title "Description"
+	echo "Disables or enabled the Xdebug module for PHP."
+	echo "Xdebug often decreases performance considerably. That's why it's"
+	echo "best to disable it when it's not needed"
+	echo; echo "You need to call 'setup-xdebug.sh' once before using this script."
 	exit 1
 }
+if [ "--help" = "$1" ] || [ "-h" = "$1" ]; then 
+	usage 
+fi
 
 if [ -z "$1" ]; then
 	usage

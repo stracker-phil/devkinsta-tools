@@ -17,7 +17,10 @@ git clone https://github.com/stracker-phil/devkinsta-tools.git .
 
 Here is a short overview of the scripts and what they can do for you:
 
-> Use the param `-h` or `--help` on any script to display usage details and notes. For example `wp-cron.sh --help`
+> **Need `--help`?**
+>
+> Use the param `-h` or `--help` on any script to display usage details and notes.  
+> For example `wp-cron.sh --help`
 
 ### Script: `setup-backups.sh`
 

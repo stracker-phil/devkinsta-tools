@@ -16,7 +16,7 @@ All scripts should be placed inside your `DevKinsta/private` folder. That locati
 
 ### Usage
 
-Call scripts from the command line, i.e. from the Terminal app on macOS; possibly they also work inside the Windows 10 Command Prompt (`cmd.ext`).
+Call scripts from the command line, i.e. from the Terminal app on macOS; possibly they also work inside the Windows 10 Command Prompt (`cmd.exe`).
 
 For example, to setup Xdebug:
 

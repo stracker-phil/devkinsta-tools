@@ -6,9 +6,23 @@ Collection of small tools that provide additional features when developing websi
 
 ## Installation
 
+
 ```shell
 cd ~/DevKinsta/private
 git clone https://github.com/stracker-phil/devkinsta-tools.git .
+```
+
+All scripts should be placed inside your `DevKinsta/private` folder. That location is shared with the Docker container `devkinsta_fpm`.
+
+### Usage
+
+Call scripts from the command line, i.e. from the Terminal app on macOS; possibly they also work inside the Windows 10 Command Prompt (`cmd.ext`).
+
+For example, to setup Xdebug:
+
+```shell
+cd ~/DevKinsta/private
+bash setup-xdebug.sh
 ```
 
 ----
@@ -17,18 +31,18 @@ git clone https://github.com/stracker-phil/devkinsta-tools.git .
 
 Here is a short overview of the scripts and what they can do for you:
 
-### Need `--help`?
-
-Use the param `-h` or `--help` on any script to display usage details and notes.  
-For example `wp-cron.sh --help` or `site.sh -h`
+> **Need `--help`?**
+>
+> Use the param `-h` or `--help` on any script to display usage details and notes.  
+> For example `bash wp-cron.sh --help` or `site.sh -h`
 
 ### Script: `setup-backups.sh`
 
 #### Usage
 
 ```shell
-setup-backups.sh
-setup-backups.sh --help
+bash setup-backups.sh --help
+bash setup-backups.sh
 ```
 
 #### Description
@@ -37,7 +51,7 @@ setup-backups.sh --help
 
 Setup script to start automatic DB backups. You only need to run this script once (or after updating DevKinsta).
 
-#### Setup Tasks
+#### What it does
 
 1. Install the `cron` daemon in devkinsta_fpm container
 1. Register the `cron` service to the containers autostart scripts
@@ -50,15 +64,15 @@ Setup script to start automatic DB backups. You only need to run this script onc
 #### Usage
 
 ```shell
-setup-xdebug.sh
-setup-xdebug.sh --help
+bash setup-xdebug.sh --help
+bash setup-xdebug.sh
 ```
 
 #### Description
 
 Setup script to install and configure Xdebug for all available PHP modules. You only need to run this script once (or after updating DevKinsta).
 
-#### Setup Tasks
+#### What it does
 
 1. Installs the xdebug module for all available php services
 1. Creates xdebug.ini configuration
@@ -70,13 +84,13 @@ Setup script to install and configure Xdebug for all available PHP modules. You 
 #### Usage
 
 ```shell
-wp-cron.sh <website-dir> <interval>
-wp-cron.sh --help
+bash wp-cron.sh --help
+bash wp-cron.sh <website-dir> <interval>
 
 # Examples:
-wp-cron.sh example-site 10  # Configure wp-cron with a 10 minute interval
-wp-cron.sh example-site 0   # Disable wp-cron for example-site
-wp-cron.sh example-site now # Run wp-cron once without chaning the interval
+bash wp-cron.sh example-site 10  # Configure wp-cron with a 10 minute interval
+bash wp-cron.sh example-site 0   # Disable wp-cron for example-site
+bash wp-cron.sh example-site now # Run wp-cron once without chaning the interval
 ```
 
 #### Params
@@ -98,12 +112,12 @@ Notes: The wp-cron event is triggerd via WP CLI. If this script is called before
 #### Usage
 
 ```shell
-xdebug.sh <state>
-xdebug.sh --help
+bash xdebug.sh --help
+bash xdebug.sh <state>
 
 # Examples:
-xdebug.sh on  # Enables Xdebug in all php services
-xdebug.sh off # Completely disables Xdebug again
+bash xdebug.sh on  # Enables Xdebug in all php services
+bash xdebug.sh off # Completely disables Xdebug again
 ```
 
 #### Params
@@ -121,12 +135,12 @@ Tip: Only enable Xdebug when you actually need it. While the module is active, y
 #### Usage
 
 ```shell
-site.sh <action> <website-dir>
-site.sh --help
+bash site.sh --help
+bash site.sh <action> <website-dir>
 
 # Examples:
-site.sh disable example-site
-site.sh enable example-site
+bash site.sh disable example-site
+bash site.sh enable example-site
 ```
 
 #### Params
@@ -145,13 +159,13 @@ You can restore an archived website by calling the script with the action "enabl
 #### Usage
 
 ```shell
-server.sh <web-server> <db-server>
-server.sh --help
+bash server.sh --help
+bash server.sh <web-server> <db-server>
 
 # Examples:
-server.sh kinsta mamp # Use Nginx of DevKinsta but link it to the MAMP Pro MySQL server
-server.sh mamp mamp   # MAMP Pro for webserver and MySQL
-server.sh             # Use DevKinsta for web server and MySQL
+bash server.sh kinsta mamp # Use Nginx of DevKinsta but link it to the MAMP Pro MySQL server
+bash server.sh mamp mamp   # MAMP Pro for webserver and MySQL
+bash server.sh             # Use DevKinsta for web server and MySQL
 ```
 
 #### Params
@@ -210,8 +224,8 @@ When using PhpStorm, check out this guide on how to set up Xdebug for your proje
 In PhpStorm you can add the shell scripts above to your toolbar to quickly run commands like "Enable Xdebug" or "Run wp-cron":
 
 1. Open **Settings | Tools | External Tools**, add a new tool:
-    * Program: `{script}`, e.g. `xdebug.sh`
-    * Arguments: `{params}`, e.g. `on`
+    * Program: `bash`
+    * Arguments: `{script and params}`, e.g. `xdebug.sh on`
     * Working dir: `/Users/{name}/DevKinsta/private`
     * Activate "Open console for tool output" (not required but recommended)
 1. Open **Settings | Appearance & Behavior | Menus and Toolbars** and add your custom tools to a menu

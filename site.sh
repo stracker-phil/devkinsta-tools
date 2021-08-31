@@ -10,7 +10,7 @@ source "$(dirname $0)/.lib.sh"
 state=$1
 site=$2
 pub_dir=$root_dir/public/$site
-arch_dir=$root_dir/archive/$site
+arch_dir=$root_dir/archive/arch-$site
 #db_done=$(docker exec devkinsta_fpm bash -c '[ ! -f /www/kinsta/mysql.conf ] || echo 1')
 
 usage() {

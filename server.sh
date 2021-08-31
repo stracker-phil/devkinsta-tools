@@ -7,6 +7,7 @@ db_server=$2
 
 usage() {
 	title "Usage"
+	cmd "$0" "--info"
 	cmd "$0" "<web-server> <db-server>"
 	log "<web-server> .. 'kinsta' or 'mamp'. Default is 'kinsta'"
 	log "<db-server> .. 'kinsta' or 'mamp'. Default is 'kinsta'"
@@ -38,6 +39,17 @@ usage() {
 	exit 1
 }
 show_help $1
+
+show_info() {
+	title "Server Info"
+	log "Web server ...... $DEVKINSTA_WEB_SERVER"
+	log "MySQL server .... $DEVKINSTA_DB_SERVER"
+	log "MySQL host ...... $DEVKINSTA_DB_HOST"
+	exit 1
+}
+if [ "--info" = "$1" ] || [ "-i" = "$1" ]; then
+	show_info
+fi
 
 # -----
 
@@ -121,8 +133,10 @@ else
 fi
 if [ "kinsta" = $db_server ]; then
 	log "DB Server:  DevKinsta"
+	export DEVKINSTA_DB_SERVER=kinsta
 else 
 	log "DB Server:  MAMP Pro"
+	export DEVKINSTA_DB_SERVER=mamp
 fi
 
 title "Stopping servers"
@@ -134,21 +148,29 @@ sleep 3
 
 if [ "kinsta" = $web_server ]; then
 	start_kinsta
+	export DEVKINSTA_WEB_SERVER=kinsta
 
 	if [ "kinsta" = $db_server ]; then
-		set_host "devkinsta_db"
+		export DEVKINSTA_DB_HOST=devkinsta_db
 	else 
-		set_host "host.docker.internal:8889"
+		export DEVKINSTA_DB_HOST=host.docker.internal:8889
 		start_mamp
 	fi
 fi
 
 if [ "mamp" = $web_server ]; then
 	start_mamp
+	export DEVKINSTA_WEB_SERVER=mamp
 
 	if [ "kinsta" = $db_server ]; then
-		set_host "127.0.0.1:15100"
+		export DEVKINSTA_DB_HOST=127.0.0.1:15100
 	else 
-		set_host "localhost:8889"
+		export DEVKINSTA_DB_HOST=localhost:8889
 	fi
 fi
+
+set_host "$DEVKINSTA_DB_HOST"
+
+set_config "DEVKINSTA_WEB_SERVER"
+set_config "DEVKINSTA_DB_SERVER"
+set_config "DEVKINSTA_DB_HOST"

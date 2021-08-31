@@ -4,12 +4,17 @@ root_dir=$(dirname $(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd))
 
 # Test, if color output is supported.
 color=0
-if tput Co > /dev/null 2>&1
-then
-    test "`tput Co`" -gt 2 && color=1
-elif tput colors > /dev/null 2>&1
-then
-    test "`tput colors`" -gt 2 && color=1
+if tput Co > /dev/null 2>&1; then
+    test "$(tput Co)" -gt 2 && color=1
+elif tput colors > /dev/null 2>&1; then
+    test "$(tput colors)" -gt 2 && color=1
+fi
+
+# Load a previously saved configuration. 
+# This file is only accessible on the host machine!
+global_config=$root_dir/kinsta/config.bash
+if [ -f "$global_config" ]; then
+	source "$global_config"
 fi
 
 # ----
@@ -71,4 +76,16 @@ error() {
 		echo $*; 
 	fi
 	exit 1
+}
+
+set_config() {
+	local var=$1
+
+	if [ -f /.dockerenv ]; then
+		error "Cannot save config values inside Docker: Run this command on the host machine."
+	fi
+
+	touch "$global_config"
+	sed -i "/export $var=/d" "$global_config"
+	echo "export $var=${!var}" >> "$global_config"
 }
